@@ -3,11 +3,6 @@ import { ref } from "vue";
 import { store } from "@/services/auth.js";
 import { isValidEmail } from "@/services/utils";
 
-// store.handleLogin({
-//   email: "edouard@example.com",
-//   password: "admin123",
-// });
-
 const form = ref({
   email: "",
   password: "",
@@ -45,6 +40,7 @@ const rules = {
           prepend-inner-icon="mdi-email-outline"
           variant="filled"
           :rules="[rules.required, rules.isValidEmail]"
+          v-model="form.email"
         ></v-text-field>
         <v-alert
           type="error"
@@ -53,8 +49,8 @@ const rules = {
         />
 
         <v-text-field
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="!visible ? 'text' : 'password'"
+          :append-inner-icon="!visible ? 'mdi-eye-off' : 'mdi-eye'"
+          :type="!visible ? 'password' : 'text'"
           density="compact"
           class="mb-2" 
           label="Mot de passe"
@@ -63,6 +59,7 @@ const rules = {
           variant="filled"
           @click:append-inner="visible = !visible"
           :rules="[rules.required]"
+          v-model="form.password"
         ></v-text-field>
 
         <v-alert

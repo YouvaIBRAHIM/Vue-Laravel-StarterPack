@@ -15,11 +15,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): Response
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return response()->noContent();
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
+            return response()->json([
+                "message" => "success"
+            ], 202);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "message" => $th->getMessage()
+            ], 403);
+        }
     }
 
     /**

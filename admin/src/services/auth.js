@@ -3,7 +3,7 @@ import router from "@/router";
 import axiosInstance from "@/services/axios";
 
 export const store = reactive({
-    user: false,
+    user: null,
     errors: [],
     status: null,
     async getToken() {
@@ -11,27 +11,29 @@ export const store = reactive({
     },
     async getUser() {
         await this.getToken();
-        const data = await axiosInstance.get("/api/user");
-        this.user = data.data;
+        try {
+            const data = await axiosInstance.get("/api/user");
+            if (data) {
+                return true
+            }
+        } catch (error) {
+            return false;
+        }
     },
     async handleLogin(data) {
-        console.log("🚀 ~ file: auth.js:18 ~ handleLogin ~ data:", data)
         this.errors = [];
-        const token = await this.getToken();
+        await this.getToken();
 
-        console.log(token);
         try {
-            const res = await axiosInstance.post("/login", {
+            const response = await axiosInstance.post("/login", {
                 email: data.email,
                 password: data.password,
             });
-            console.log(res);
-            router.push({ name : "Home" });
-        } catch (error) {
-            console.log(error)
-            if (error.response.status === 422) {
-                this.errors = error.response.data.errors;
+            if (response?.status === 202) {
+                router.push("/")
             }
+        } catch (error) {
+            console.log("🚀 ~ file: auth.js:37 ~ handleLogin ~ error:", error)
         }
     },
     async handleLogout() {
